@@ -866,6 +866,7 @@ input.addEventListener("keyup", function(event) {
     console.log(start_time);
     first = false;
   }
+  document.getElementById("keycode").innerHTML=event.keycode;
   if (event.keycode === 13) {
     // Cancel the default action, if needed
     event.preventDefault();
