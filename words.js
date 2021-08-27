@@ -867,11 +867,10 @@ input.addEventListener("keyup", function(event) {
     first = false;
   }
   console.log(event.keyCode);
-  document.getElementById("keycode").innerHTML=event.keyCode;
   if (event.keyCode === 13) {
     // Cancel the default action, if needed
     event.preventDefault();
-    let user_string = input.value.trim();
+    let user_string = input.value.trim().toLowerCase();
     console.log(user_string);
     //let res = naive_check(user_string);
   //console.log(res);   
