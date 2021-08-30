@@ -842,31 +842,36 @@ const arr = [
 "substance"
 ];
 
+var selected = "";
 var len = 10;
-
-var shuffled = arr.sort(() => 0.5 - Math.random());
-
-var selected = shuffled.slice(0, len).join(' ');
-
-console.log(selected)
-
-document.getElementById("mytext").innerHTML = selected;
-
-var input = document.getElementById("myinput");
-
-var first = true;
-
+var first;
 var start_time;
 
-// Execute a function when the user releases a key on the keyboard
-input.addEventListener("keyup", function(event) {
-  if (first) {
+let input = document.getElementById("myinput");
+input.addEventListener("keyup", function() { listen(event); });
+
+start();
+
+function start() {
+  input.value = "";
+  first = true;
+  start_time = 0;
+
+  var shuffled = arr.sort(() => 0.5 - Math.random());
+  selected = shuffled.slice(0, len).join(' ');
+  console.log("from choose: " + selected);
+  document.getElementById("mytext").innerHTML = selected;
+}
+
+function listen(event) {
+  // Execute a function when the user releases a key on the keyboard
+   if (first) {
     console.log("started");
     start_time = parseInt(performance.now());
     console.log(start_time);
     first = false;
   }
-  console.log(event.keyCode);
+  //console.log(event.keyCode);
   if (event.keyCode === 13) {
     // Cancel the default action, if needed
     event.preventDefault();
@@ -874,22 +879,30 @@ input.addEventListener("keyup", function(event) {
     console.log(user_string);
     //let res = naive_check(user_string);
   //console.log(res);   
-    console.log(selected.length, user_string.length);
+    //console.log(selected.length, user_string.length);
     let diff = decent_check(selected, user_string);
+    console.log("from listen: " + selected);
     console.log(diff);
     var end_time = parseInt(performance.now());
     console.log(end_time);
-    display((end_time-start_time)/1000, diff); //displays wpm and accuracy
+    display((end_time-start_time)/1000, diff); //displays wpm and accuracy and shows restart button
   }
-});
+}
 
 function display(raw_time, diff) {
   var wpm = parseInt(len/(raw_time/60));
-  document.getElementById("wpm").innerHTML = 'raw wpm: ' + wpm + ' |';
-  document.getElementById("acc").innerHTML = '| # of mistakes: ' + diff;
-  var scaled = (wpm*((1-diff/len))).toFixed(2);
+
+  var wpm_el = document.getElementById("wpm");
+  wpm_el.innerHTML = 'raw wpm: ' + wpm + ' |';
+
+  var acc_el = document.getElementById("acc");
+  acc_el.innerHTML = '| # of mistakes: ' + diff;
+
+  //var scaled = (wpm*((1-diff/len))).toFixed(2);
   var scaled = (wpm*((1-diff/len*0.7))).toFixed(2);
-  document.getElementById("scaled").innerHTML = ((scaled >= 0) ? scaled : 0) + ' wpm';
+  var scaled_el = document.getElementById("scaled");
+  scaled_el.innerHTML = ((scaled >= 0) ? scaled : 0) + ' wpm';
+  start();
 }
 
 function naive_check(str2) {
@@ -923,3 +936,5 @@ function decent_check(str1, str2) {
    }
    return track[str2.length][str1.length];
 };
+
+
